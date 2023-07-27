@@ -1,6 +1,8 @@
 #include <Arduino.h>
+#include <Wire.h>
 #include <SparkFun_TB6612.h>
 #include "controle_juiz.h"
+#include "led_rgb.h"
 
 
 // Pinos do motor
@@ -20,6 +22,12 @@
 #define TWO 1
 #define TREE 2
 
+//  Definição das cores do led rgb
+#define AMARELO 16768256 
+#define VERMELHO 16515843
+#define VERDE 63240
+#define AZUL 49911
+
 // Objeto IR
 controle_juiz controle(IR_PIN);
 
@@ -27,9 +35,14 @@ controle_juiz controle(IR_PIN);
 Motor rightMotor(AIN1, AIN2, PWMA, 1, STBY);
 Motor leftMotor(BIN1, BIN2, PWMB, 1, STBY);
 
-void setup() {
+// Objeto led
+led_rgb LED;
 
+void setup() {
   Serial.begin(112500);
+
+  LED.init();
+  LED.latch(100,AZUL);
   controle.init();
 }
 void loop() {
@@ -39,6 +52,7 @@ void loop() {
     case ONE:
       leftMotor.drive(255);
       rightMotor.drive(-255);
+      LED.set(VERMELHO);
       delay(200);
 
       break;
@@ -46,6 +60,7 @@ void loop() {
     case TWO:
       leftMotor.drive(-255);
       rightMotor.drive(255);
+      LED.set(VERDE);
       delay(200);
 
       break;
@@ -53,6 +68,7 @@ void loop() {
     case TREE:
       leftMotor.drive(255);
       rightMotor.drive(255);
+      LED.set(AMARELO);
       delay(200);
 
       break;
